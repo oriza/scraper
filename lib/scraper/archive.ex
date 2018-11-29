@@ -12,7 +12,7 @@ defmodule Scraper.Archive do
     |> extract(selectors, html_parser)
   end
 
-  defp extract({:ok, body}, selectors, html_parser) do
+  defp extract({:ok, 200, body}, selectors, html_parser) do
     document = html_parser.parse(body)
 
     for article <- html_parser.select_all(document, selectors.container) do
@@ -32,5 +32,7 @@ defmodule Scraper.Archive do
     end
   end
 
+  defp extract({:ok, _, body}, _, _), do: {:error, body}
+  
   defp extract(error, _, _), do: error
 end

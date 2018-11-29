@@ -12,7 +12,7 @@ defmodule Scraper.Rss do
     |> extract(rss_parser)
   end
 
-  defp extract({:ok, body}, rss_parser) do
+  defp extract({:ok, 200, body}, rss_parser) do
     body
     |> rss_parser.parse()
     |> Enum.map(fn entry ->
@@ -27,5 +27,7 @@ defmodule Scraper.Rss do
     end)
   end
 
-  defp extract(error, _), do: error
+  defp extract({:ok, _, body}, _), do: {:error, body}
+
+  defp extract({:error, reason}, _), do: {:error, reason}
 end
