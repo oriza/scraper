@@ -3,32 +3,45 @@ defmodule Scraper.Article do
     Article scraper
 
     ## Example
-    iex> Scraper.Article.scrape(http_client, html_parser, "https://atlatszo.hu/2018/10/31/a-holtakra-epitett-varos-a-miniszterelnoki-rezidencia-a-kongresszusi-kozpont-es-a-szechenyi-ter-helyen-is-temetok-voltak-egykor-budapesten/", %{title: ".heading.n9 h1", authors: ".the_author.ib", published: ".the_post_date", category: ".heading.n9 a", content: ".the_content"}
+    iex> Scraper.Article.scrape("https://atlatszo.hu/2018/10/31/a-holtakra-epitett-varos-a-miniszterelnoki-rezidencia-a-kongresszusi-kozpont-es-a-szechenyi-ter-helyen-is-temetok-voltak-egykor-budapesten/", %{title: ".heading.n9 h1", authors: ".the_author.ib", published_at: ".the_post_date", category: ".heading.n9 a", content: ".the_content"})
   """
 
-  def scrape(http_client, html_parser, url, selectors) do
+  import Meeseeks.CSS
+
+  def scrape(url, selectors) do
     url
-    |> http_client.get()
-    |> extract(selectors, html_parser)
+    |> Scraper.Http.get()
+    |> extract(selectors)
+    |> article_or_error()
   end
 
-  defp extract({:ok, body}, selectors, html_parser) do
-    document = html_parser.parse(body)
+  defp extract({:ok, 200, body}, selectors) do
+    document = Meeseeks.parse(body)
 
-    title = html_parser.select_one(document, selectors.title)
-    authors = html_parser.select_one(document, selectors.authors)
-    published = html_parser.select_one(document, selectors.published)
-    category = html_parser.select_one(document, selectors.category)
-    content = html_parser.select_one(document, selectors.content)
+    title = Meeseeks.one(document, css(selectors.title))
+    authors = Meeseeks.one(document, css(selectors.authors))
+    published = Meeseeks.one(document, css(selectors.published_at))
+    category = Meeseeks.one(document, css(selectors.category))
+    content = Meeseeks.one(document, css(selectors.content))
 
     %{
-      title: html_parser.get_text(title),
-      authors: html_parser.get_text(authors),
-      published: html_parser.get_text(published),
-      category: html_parser.get_text(category),
-      content: html_parser.get_text(content)
+      title: Meeseeks.text(title),
+      authors: Meeseeks.text(authors),
+      published: Meeseeks.text(published),
+      category: Meeseeks.text(category),
+      content: Meeseeks.text(content)
     }
   end
 
-  defp extract(error, _, _), do: error
+  defp extract({:ok, _, body}, _), do: {:error, body}
+
+  defp extract(error, _), do: error
+
+  defp article_or_error(article) when is_map(article) do
+    {:ok, article}
+  end
+
+  defp article_or_error(message) do
+    {:error, message}
+  end
 end

@@ -4,14 +4,14 @@ defmodule Scraper.Weather do
   """
   @key "3a96de8843294fc571b69c83c7c368c0"
 
-  def scrape(http_client, json_parser, city) do
+  def scrape(city) do
     "http://api.openweathermap.org/data/2.5/weather?q=#{city}&units=metric&lang=hu&APPID=#{@key}"
-    |> http_client.get()
-    |> extract(json_parser)
+    |> Scraper.Http.get()
+    |> extract()
   end
 
-  defp extract({:ok, body}, json_parser) do
-    {:ok, data} = json_parser.parse(body)
+  defp extract({:ok, 200, body}) do
+    {:ok, data} = Jason.decode(body)
 
     %{
       temperature: data["main"]["temp"],
@@ -20,5 +20,7 @@ defmodule Scraper.Weather do
     }
   end
 
-  defp extract(error, _), do: error
+  defp extract({:ok, _, body}, _), do: {:error, body}
+
+  defp extract(error), do: error
 end

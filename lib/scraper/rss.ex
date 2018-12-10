@@ -3,31 +3,40 @@ defmodule Scraper.Rss do
     RSS scraper
 
     ## Example
-    iex> Scraper.Rss.scrape(http_client, rss_parser, "https://index.hu/24ora/rss/")
+    iex> Scraper.Rss.scrape("https://index.hu/24ora/rss/")
   """
 
-  def scrape(http_client, rss_parser, url) do
+  import Meeseeks.CSS
+
+  def scrape(url) do
     url
-    |> http_client.get()
-    |> extract(rss_parser)
+    |> Scraper.Http.get()
+    |> extract()
   end
 
-  defp extract({:ok, 200, body}, rss_parser) do
-    body
-    |> rss_parser.parse()
-    |> Enum.map(fn entry ->
+  defp extract({:ok, 200, body}) do
+    document = Meeseeks.parse(body, :xml)
+
+    for entry <- Meeseeks.all(document, css("channel item")) do
+      title = Meeseeks.one(entry, css("title"))
+      url = Meeseeks.one(entry, css("link"))
+      description = Meeseeks.one(entry, css("description"))
+      published_at = Meeseeks.one(entry, css("pubDate"))
+      category = Meeseeks.one(entry, css("category"))
+      author = Meeseeks.one(entry, css("author"))
+
       %{
-        title: entry.title,
-        description: entry.description,
-        published_at: entry.updated,
-        url: entry.url,
-        categories: entry.categories,
-        author: entry.author
+        title: Meeseeks.text(title),
+        url: Meeseeks.text(url),
+        description: Meeseeks.text(description),
+        published_at: Meeseeks.text(published_at),
+        category: Meeseeks.text(category),
+        author: Meeseeks.text(author)
       }
-    end)
+    end
   end
 
-  defp extract({:ok, _, body}, _), do: {:error, body}
+  defp extract({:ok, _, body}), do: {:error, body}
 
-  defp extract({:error, reason}, _), do: {:error, reason}
+  defp extract({:error, reason}), do: {:error, reason}
 end

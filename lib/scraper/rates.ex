@@ -3,32 +3,36 @@ defmodule Scraper.Rates do
     napiarfolyam.hu scraper.
 
     ## Example
-    iex> Scraper.Rates.scrape(http_client, html_parser, "api.napiarfolyam.hu/?bank=mnb")
+    iex> Scraper.Rates.scrape("api.napiarfolyam.hu/?bank=mnb")
   """
 
-  def scrape(http_client, html_parser, url) do
+  import Meeseeks.CSS
+
+  def scrape(url) do
     url
-    |> http_client.get()
-    |> extract(html_parser)
+    |> Scraper.Http.get()
+    |> extract()
   end
 
-  defp extract({:ok, body}, html_parser) do
-    document = html_parser.parse(body)
+  defp extract({:ok, 200, body}) do
+    document = Meeseeks.parse(body)
 
-    for rate <- html_parser.select_all(document, "arfolyamok deviza item") do
-      currency = html_parser.select_one(rate, "penznem")
-      buy = html_parser.select_one(rate, "vetel")
-      sell = html_parser.select_one(rate, "eladas")
-      average = html_parser.select_one(rate, "kozep")
+    for rate <- Meeseeks.all(document, css("arfolyamok deviza item")) do
+      currency = Meeseeks.one(rate, css("penznem"))
+      buy = Meeseeks.one(rate, css("vetel"))
+      sell = Meeseeks.one(rate, css("eladas"))
+      average = Meeseeks.one(rate, css("kozep"))
 
       %{
-        currency: html_parser.get_text(currency),
-        buy: html_parser.get_text(buy),
-        sell: html_parser.get_text(sell),
-        average: html_parser.get_text(average)
+        currency: Meeseeks.text(currency),
+        buy: Meeseeks.text(buy),
+        sell: Meeseeks.text(sell),
+        average: Meeseeks.text(average)
       }
     end
   end
 
-  defp extract(error, _), do: error
+  defp extract({:ok, _, body}), do: {:error, body}
+
+  defp extract({:error, reason}), do: {:error, reason}
 end

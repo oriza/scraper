@@ -3,36 +3,46 @@ defmodule Scraper.Archive do
     News archive scraper
 
     ## Example:
-    iex> Scraper.Archive.scrape(http_client, html_parser,"http://nol.hu/belfold?page=1", %{container: ".cikkBlock.kethasabos", title: "h1", authors: ".cikkSzerzo", description: ".lead", published: ".cikkDatum.centered", url: ".vezetoCimkeAfter"})
+    iex> Scraper.Archive.scrape("http://nol.hu/belfold?page=1", %{container: ".cikkBlock.kethasabos", title: "h1", authors: ".cikkSzerzo", description: ".lead", published_at: ".cikkDatum.centered", url: ".vezetoCimkeAfter"})
   """
 
-  def scrape(http_client, html_parser, url, selectors) do
+  import Meeseeks.CSS
+
+  def scrape(url, selectors) do
     url
-    |> http_client.get()
-    |> extract(selectors, html_parser)
+    |> Scraper.Http.get()
+    |> extract(selectors)
+    |> articles_or_error()
   end
 
-  defp extract({:ok, 200, body}, selectors, html_parser) do
-    document = html_parser.parse(body)
+  defp extract({:ok, 200, body}, selectors) do
+    document = Meeseeks.parse(body)
 
-    for article <- html_parser.select_all(document, selectors.container) do
-      title = html_parser.select_one(article, selectors.title)
-      url = html_parser.select_one(article, selectors.url)
-      authors = html_parser.select_one(article, selectors.authors)
-      description = html_parser.select_one(article, selectors.description)
-      published = html_parser.select_one(article, selectors.published)
+    for article <- Meeseeks.all(document, css(selectors.container)) do
+      title = Meeseeks.one(article, css(selectors.title))
+      authors = Meeseeks.one(article, css(selectors.authors))
+      description = Meeseeks.one(article, css(selectors.description))
+      published_at = Meeseeks.one(article, css(selectors.published_at))
 
       %{
-        title: html_parser.get_text(title),
-        url: html_parser.get_attribute(url, "href"),
-        authors: html_parser.get_text(authors),
-        description: html_parser.get_text(description),
-        published: html_parser.get_text(published)
+        title: Meeseeks.text(title),
+        url: Meeseeks.attr(title, "href"),
+        authors: Meeseeks.text(authors),
+        description: Meeseeks.text(description),
+        published_at: Meeseeks.text(published_at)
       }
     end
   end
 
-  defp extract({:ok, _, body}, _, _), do: {:error, body}
-  
-  defp extract(error, _, _), do: error
+  defp extract({:ok, _, body}, _), do: {:error, body}
+
+  defp extract(error, _), do: error
+
+  defp articles_or_error(articles) when is_list(articles) do
+    {:ok, articles}
+  end
+
+  defp articles_or_error(message) do
+    {:error, message}
+  end
 end
