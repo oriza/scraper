@@ -6,9 +6,11 @@ defmodule Scraper.Gemius do
     iex> Scraper.Gemius.scrape("https://rating.gemius.com/hu/reports/segmentation/data/table?&&selectedMetrics%5B0%5D%5Bformat%5D%5B%5D=integer&selectedPeriod%5BstartDate%5D=", ["index.hu", "origo.hu"])
   """
 
+  alias Scraper.Http
+
   def scrape(url, sites) do
     url
-    |> Scraper.Http.get()
+    |> Http.get()
     |> extract(sites)
   end
 

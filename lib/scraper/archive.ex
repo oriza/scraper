@@ -6,11 +6,12 @@ defmodule Scraper.Archive do
     iex> Scraper.Archive.scrape("http://nol.hu/belfold?page=1", %{container: ".cikkBlock.kethasabos", title: "h1", authors: ".cikkSzerzo", description: ".lead", published_at: ".cikkDatum.centered", url: ".vezetoCimkeAfter"})
   """
 
+  alias Scraper.Http
   import Meeseeks.CSS
 
   def scrape(url, selectors) do
     url
-    |> Scraper.Http.get()
+    |> Http.get()
     |> extract(selectors)
     |> articles_or_error()
   end

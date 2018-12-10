@@ -6,11 +6,12 @@ defmodule Scraper.Article do
     iex> Scraper.Article.scrape("https://atlatszo.hu/2018/10/31/a-holtakra-epitett-varos-a-miniszterelnoki-rezidencia-a-kongresszusi-kozpont-es-a-szechenyi-ter-helyen-is-temetok-voltak-egykor-budapesten/", %{title: ".heading.n9 h1", authors: ".the_author.ib", published_at: ".the_post_date", category: ".heading.n9 a", content: ".the_content"})
   """
 
+  alias Scraper.Http
   import Meeseeks.CSS
 
   def scrape(url, selectors) do
     url
-    |> Scraper.Http.get()
+    |> Http.get()
     |> extract(selectors)
     |> article_or_error()
   end

@@ -6,11 +6,12 @@ defmodule Scraper.Rates do
     iex> Scraper.Rates.scrape("api.napiarfolyam.hu/?bank=mnb")
   """
 
+  alias Scraper.Http
   import Meeseeks.CSS
 
   def scrape(url) do
     url
-    |> Scraper.Http.get()
+    |> Http.get()
     |> extract()
   end
 
