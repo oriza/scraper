@@ -22,7 +22,7 @@ defmodule Scraper.Rss do
       title = Meeseeks.one(entry, css("title"))
       url = Meeseeks.one(entry, css("link"))
       description = Meeseeks.one(entry, css("description"))
-      published_at = Meeseeks.one(entry, css("pubDate"))
+      published_at = Meeseeks.one(entry, css("pubDate")) || Meeseeks.one(entry, css("pubdate"))
       category = Meeseeks.one(entry, css("category"))
       author = Meeseeks.one(entry, css("author"))
 
