@@ -21,14 +21,14 @@ defmodule Scraper.Archive do
 
     for article <- Meeseeks.all(document, css(selectors.container)) do
       title = Meeseeks.one(article, css(selectors.title))
-      authors = Meeseeks.one(article, css(selectors.authors))
+      author = Meeseeks.one(article, css(selectors.authors))
       description = Meeseeks.one(article, css(selectors.description))
       published_at = Meeseeks.one(article, css(selectors.published_at))
 
       %{
         title: Meeseeks.text(title),
         url: Meeseeks.attr(title, "href"),
-        authors: Meeseeks.text(authors),
+        author: Meeseeks.text(author),
         description: Meeseeks.text(description),
         published_at: Meeseeks.text(published_at)
       }

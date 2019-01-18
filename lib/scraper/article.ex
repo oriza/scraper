@@ -12,37 +12,29 @@ defmodule Scraper.Article do
   def scrape(url, selectors) do
     url
     |> Http.get()
+    |> IO.inspect
     |> extract(selectors)
-    |> article_or_error()
   end
 
   defp extract({:ok, 200, body}, selectors) do
     document = Meeseeks.parse(body)
 
-    title = Meeseeks.one(document, css(selectors.title))
-    authors = Meeseeks.one(document, css(selectors.authors))
-    published = Meeseeks.one(document, css(selectors.published_at))
-    category = Meeseeks.one(document, css(selectors.category))
-    content = Meeseeks.one(document, css(selectors.content))
-
-    %{
-      title: Meeseeks.text(title),
-      authors: Meeseeks.text(authors),
-      published: Meeseeks.text(published),
-      category: Meeseeks.text(category),
-      content: Meeseeks.text(content)
-    }
+    {:ok, %{
+      author: get_text_from_element(document, selectors.authors),
+      published_at: get_text_from_element(document, selectors.published_at),
+      category: get_text_from_element(document, selectors.category),
+      content: get_text_from_element(document, selectors.content),
+      html: body
+    }}
   end
 
   defp extract({:ok, _, body}, _), do: {:error, body}
 
-  defp extract(error, _), do: error
+  defp extract(error, _), do: {:ok, error}
 
-  defp article_or_error(article) when is_map(article) do
-    {:ok, article}
-  end
-
-  defp article_or_error(message) do
-    {:error, message}
+  defp get_text_from_element(document, selector) do
+    document
+    |> Meeseeks.one(css(selector || ""))
+    |> Meeseeks.text() || nil
   end
 end
