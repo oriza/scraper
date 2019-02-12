@@ -8,7 +8,9 @@ defmodule Scraper.Http do
         decoded_body = decode(body)
 
         {:ok, status, decoded_body}
-      {:error, %HTTPoison.Error{reason: reason}} -> {:error, reason}
+
+      {:error, %HTTPoison.Error{reason: reason}} ->
+        {:error, reason}
     end
   end
 

@@ -12,20 +12,21 @@ defmodule Scraper.Article do
   def scrape(url, selectors) do
     url
     |> Http.get()
-    |> IO.inspect
+    |> IO.inspect()
     |> extract(selectors)
   end
 
   defp extract({:ok, 200, body}, selectors) do
     document = Meeseeks.parse(body)
 
-    {:ok, %{
-      author: get_text_from_element(document, selectors.authors),
-      published_at: get_text_from_element(document, selectors.published_at),
-      category: get_text_from_element(document, selectors.category),
-      content: get_text_from_element(document, selectors.content),
-      html: body
-    }}
+    {:ok,
+     %{
+       author: get_text_from_element(document, selectors.authors),
+       published_at: get_text_from_element(document, selectors.published_at),
+       category: get_text_from_element(document, selectors.category),
+       content: get_text_from_element(document, selectors.content),
+       html: body
+     }}
   end
 
   defp extract({:ok, _, body}, _), do: {:error, body}

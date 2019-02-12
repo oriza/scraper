@@ -16,7 +16,7 @@ defmodule Scraper.Parser.Datetime do
     "2019. január 14., hétfő 17:45",
     "újságíró . 2019. 01. 14. 20:17",
     "2019. január 14. 20:15 - szerző: Mészáros Márton",
-    "2018. április 10., kedd 10:43, frissítve: kedd 11:55",
+    "2018. április 10., kedd 10:43, frissítve: kedd 11:55"
   ]
 
   @time ~r/(\d{2}):(\d{2})/
@@ -35,9 +35,10 @@ defmodule Scraper.Parser.Datetime do
   defp format_today(datetime) do
     %{year: year, month: month, day: day} = DateTime.utc_now()
 
-    time = @time
-    |> Regex.run(datetime)
-    |> List.first
+    time =
+      @time
+      |> Regex.run(datetime)
+      |> List.first()
 
     %{
       "year" => date_item_to_string(year),
