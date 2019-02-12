@@ -12,7 +12,6 @@ defmodule Scraper.Article do
   def scrape(url, selectors) do
     url
     |> Http.get()
-    |> IO.inspect()
     |> extract(selectors)
   end
 

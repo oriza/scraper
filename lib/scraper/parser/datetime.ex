@@ -1,4 +1,11 @@
 defmodule Scraper.Parser.Datetime do
+  @moduledoc """
+    Datetime Parser
+
+    ## Example
+    iex> Scraper.Parser.Datetime("2019. január. 14. 20:00")
+  """
+
   @dates [
     "ma 19:41",
     "2019-01-14",
