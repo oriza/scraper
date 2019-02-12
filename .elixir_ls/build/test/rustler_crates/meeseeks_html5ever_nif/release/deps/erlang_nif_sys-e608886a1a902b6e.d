@@ -1,0 +1,8 @@
+/home/drakvuf/work/oriza/scraper/.elixir_ls/build/test/rustler_crates/meeseeks_html5ever_nif/release/deps/liberlang_nif_sys-e608886a1a902b6e.rlib: /home/drakvuf/.cargo/registry/src/github.com-1ecc6299db9ec823/erlang_nif-sys-0.6.4/src/lib.rs /home/drakvuf/.cargo/registry/src/github.com-1ecc6299db9ec823/erlang_nif-sys-0.6.4/src/initmacro.rs /home/drakvuf/.cargo/registry/src/github.com-1ecc6299db9ec823/erlang_nif-sys-0.6.4/src/erlang_nif_sys_api.rs /home/drakvuf/work/oriza/scraper/.elixir_ls/build/test/rustler_crates/meeseeks_html5ever_nif/release/build/erlang_nif-sys-28425de5225d5925/out/nif_api.snippet
+
+/home/drakvuf/work/oriza/scraper/.elixir_ls/build/test/rustler_crates/meeseeks_html5ever_nif/release/deps/erlang_nif_sys-e608886a1a902b6e.d: /home/drakvuf/.cargo/registry/src/github.com-1ecc6299db9ec823/erlang_nif-sys-0.6.4/src/lib.rs /home/drakvuf/.cargo/registry/src/github.com-1ecc6299db9ec823/erlang_nif-sys-0.6.4/src/initmacro.rs /home/drakvuf/.cargo/registry/src/github.com-1ecc6299db9ec823/erlang_nif-sys-0.6.4/src/erlang_nif_sys_api.rs /home/drakvuf/work/oriza/scraper/.elixir_ls/build/test/rustler_crates/meeseeks_html5ever_nif/release/build/erlang_nif-sys-28425de5225d5925/out/nif_api.snippet
+
+/home/drakvuf/.cargo/registry/src/github.com-1ecc6299db9ec823/erlang_nif-sys-0.6.4/src/lib.rs:
+/home/drakvuf/.cargo/registry/src/github.com-1ecc6299db9ec823/erlang_nif-sys-0.6.4/src/initmacro.rs:
+/home/drakvuf/.cargo/registry/src/github.com-1ecc6299db9ec823/erlang_nif-sys-0.6.4/src/erlang_nif_sys_api.rs:
+/home/drakvuf/work/oriza/scraper/.elixir_ls/build/test/rustler_crates/meeseeks_html5ever_nif/release/build/erlang_nif-sys-28425de5225d5925/out/nif_api.snippet:

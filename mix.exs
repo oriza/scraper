@@ -25,6 +25,7 @@ defmodule Scraper.MixProject do
       {:meeseeks, "~> 0.10.1"},
       {:poison, "~> 3.1"},
       {:jason, "~> 1.1"},
+      {:timex, "~> 3.0"},
       {:credo, "~> 0.10.0", only: [:dev, :test], runtime: false}
     ]
   end

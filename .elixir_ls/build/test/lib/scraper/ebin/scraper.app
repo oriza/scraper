@@ -1,0 +1,12 @@
+{application,scraper,
+             [{applications,[kernel,stdlib,elixir,logger,poison,jason,timex,
+                             httpoison,meeseeks]},
+              {description,"scraper"},
+              {modules,['Elixir.Scraper','Elixir.Scraper.Archive',
+                        'Elixir.Scraper.Article','Elixir.Scraper.Gemius',
+                        'Elixir.Scraper.Http',
+                        'Elixir.Scraper.Parser.Datetime',
+                        'Elixir.Scraper.Rates','Elixir.Scraper.Rss',
+                        'Elixir.Scraper.Weather']},
+              {registered,[]},
+              {vsn,"0.1.0"}]}.
