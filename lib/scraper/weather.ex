@@ -12,17 +12,15 @@ defmodule Scraper.Weather do
     |> extract()
   end
 
-  defp extract({:ok, 200, body}) do
+  defp extract({:ok, body}) do
     {:ok, data} = Jason.decode(body)
 
     %{
-      temperature: data["main"]["temp"],
+      current_temperature: data["main"]["temp"],
       description: List.first(data["weather"])["description"],
       icon: List.first(data["weather"])["icon"]
     }
   end
 
-  defp extract({:ok, _, body}, _), do: {:error, body}
-
-  defp extract(error), do: error
+  defp extract({:error, error}), do: {:error, error}
 end
