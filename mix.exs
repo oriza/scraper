@@ -14,16 +14,15 @@ defmodule Scraper.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :httpoison]
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:httpoison, "~> 1.0"},
+      {:httpoison, "~> 1.4"},
       {:meeseeks, "~> 0.10.1"},
-      {:poison, "~> 3.1"},
       {:jason, "~> 1.1"},
       {:timex, "~> 3.0"},
       {:credo, "~> 0.10.0", only: [:dev, :test], runtime: false}
