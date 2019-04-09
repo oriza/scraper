@@ -6,16 +6,15 @@ defmodule Scraper.Rates do
     iex> Scraper.Rates.scrape("api.napiarfolyam.hu/?bank=mnb")
   """
 
-  alias Scraper.Http
   import Meeseeks.CSS
 
-  def scrape(url) do
-    url
-    |> Http.get()
+  def scrape(http_client, bank) do
+    "http://api.napiarfolyam.hu/?bank=#{bank}"
+    |> http_client.get()
     |> extract()
   end
 
-  defp extract({:ok, 200, body}) do
+  defp extract({:ok, body}) do
     document = Meeseeks.parse(body)
 
     for rate <- Meeseeks.all(document, css("arfolyamok deviza item")) do
@@ -32,8 +31,6 @@ defmodule Scraper.Rates do
       }
     end
   end
-
-  defp extract({:ok, _, body}), do: {:error, body}
 
   defp extract({:error, reason}), do: {:error, reason}
 end

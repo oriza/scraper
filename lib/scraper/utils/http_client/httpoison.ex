@@ -1,7 +1,11 @@
-defmodule Scraper.Http do
+defmodule Scraper.Utils.HTTPoison do
   @moduledoc """
     Abstraction over HTTPoison
   """
+
+  @behaviour Scraper.Utils.HTTPClient
+
+  @impl Scraper.Utils.HTTPClient
   def get(url) do
     IO.inspect url
     case HTTPoison.get(url, [], ssl: [{:versions, [:"tlsv1.2"]}]) do
@@ -9,7 +13,6 @@ defmodule Scraper.Http do
         decoded_body = decode(body)
 
         {:ok, decoded_body}
-
       {:error, %HTTPoison.Error{reason: reason}} ->
         {:error, reason}
     end

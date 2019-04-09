@@ -8,9 +8,9 @@ defmodule Scraper.Gemius do
 
   alias Scraper.Http
 
-  def scrape(url, sites) do
+  def scrape(http_client, url, sites) do
     url
-    |> Http.get()
+    |> http_client.get()
     |> extract(sites)
   end
 

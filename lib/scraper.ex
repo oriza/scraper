@@ -3,10 +3,10 @@ defmodule Scraper do
     Scraper module for scraping various sources
   """
 
-  defdelegate scrape_archive(url, selectors), to: Scraper.Archive, as: :scrape
-  defdelegate scrape_article(url, selectors), to: Scraper.Article, as: :scrape
-  defdelegate scrape_gemius(url, sites), to: Scraper.Gemius, as: :scrape
-  defdelegate scrape_rates(url), to: Scraper.Rates, as: :scrape
-  defdelegate scrape_rss(url), to: Scraper.Rss, as: :scrape
-  defdelegate scrape_weather(city), to: Scraper.Weather, as: :scrape
+  defdelegate scrape_archive(http_client, url, selectors), to: Scraper.Archive, as: :scrape
+  defdelegate scrape_article(http_client, url, selectors), to: Scraper.Article, as: :scrape
+  defdelegate scrape_gemius(http_client, url, sites), to: Scraper.Gemius, as: :scrape
+  defdelegate scrape_rates(http_client, url), to: Scraper.Rates, as: :scrape
+  defdelegate scrape_rss(http_client, url), to: Scraper.Rss, as: :scrape
+  defdelegate scrape_weather(http_client, city), to: Scraper.Weather, as: :scrape
 end

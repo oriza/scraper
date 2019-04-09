@@ -9,9 +9,9 @@ defmodule Scraper.Archive do
   alias Scraper.Http
   import Meeseeks.CSS
 
-  def scrape(url, selectors) do
+  def scrape(http_client, url, selectors) do
     url
-    |> Http.get()
+    |> http_client.get()
     |> extract(selectors)
     |> articles_or_error()
   end
