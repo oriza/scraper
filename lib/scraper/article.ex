@@ -9,10 +9,10 @@ defmodule Scraper.Article do
   alias Scraper.{Parser}
   import Meeseeks.CSS
 
-  def scrape(http_client, url, selectors) do
+  def scrape(http_client, html_parser, url, selectors) do
     url
     |> http_client.get()
-    |> extract(selectors)
+    |> extract(html_parser, selectors)
     |> parse_datetime()
   end
 
@@ -24,20 +24,20 @@ defmodule Scraper.Article do
 
   defp parse_datetime({:error, error}), do: {:error, error}
 
-  defp extract({:ok, body}, selectors) do
-    document = Meeseeks.parse(body)
+  defp extract({:ok, body}, html_parser, selectors) do
+    document = html_parser.parse(body)
 
     {:ok,
      %{
-       author: get_text_from_element(document, selectors.authors),
-       published_at: get_text_from_element(document, selectors.published_at),
-       category: get_text_from_element(document, selectors.category),
-       content: get_text_from_element(document, selectors.content),
+       author: html_parser.text(html_parser.query_selector(document, selectors.authors)),
+       published_at: html_parser.text(html_parser.query_selector(document, selectors.published_at)),
+       category: html_parser.text(html_parser.query_selector(document, selectors.category)),
+       content: html_parser.text(html_parser.query_selector(document, selectors.content)),
        html: body
      }}
   end
 
-  defp extract({:error, error}, _), do: {:error, error}
+  defp extract({:error, error}, html_parser, _), do: {:error, error}
 
   defp get_text_from_element(document, selector) do
     document

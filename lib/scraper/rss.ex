@@ -6,38 +6,36 @@ defmodule Scraper.Rss do
     iex> Scraper.Rss.scrape("https://index.hu/24ora/rss/")
   """
 
-  import Meeseeks.CSS
-
-  def scrape(http_client, url) do
+  def scrape(http_client, html_parser, url) do
     url
     |> http_client.get()
-    |> extract()
+    |> extract(html_parser)
     |> Enum.map(&format_datetime/1)
   end
 
-  defp extract({:ok, body}) do
-    document = Meeseeks.parse(body, :xml)
+  defp extract({:ok, body}, html_parser) do
+    document = html_parser.parse(body, :xml)
 
-    for entry <- Meeseeks.all(document, css("channel item")) do
-      title = Meeseeks.one(entry, css("title"))
-      url = Meeseeks.one(entry, css("link"))
-      description = Meeseeks.one(entry, css("description"))
-      published_at = Meeseeks.one(entry, css("pubDate")) || Meeseeks.one(entry, css("pubdate"))
-      category = Meeseeks.one(entry, css("category"))
-      author = Meeseeks.one(entry, css("author"))
+    for entry <- html_parser.query_selector_all(document, "channel item") do
+      title = html_parser.query_selector(entry, "title")
+      url = html_parser.query_selector(entry, "link")
+      description = html_parser.query_selector(entry, "description")
+      published_at = html_parser.query_selector(entry, ["pubDate", "pubdate"])
+      category = html_parser.query_selector(entry, "category")
+      author = html_parser.query_selector(entry, "author")
 
       %{
-        title: Meeseeks.text(title),
-        url: Meeseeks.text(url),
-        description: Meeseeks.text(description),
-        published_at: Meeseeks.text(published_at),
-        category: Meeseeks.text(category),
-        author: Meeseeks.text(author)
+        title: html_parser.text(title),
+        url: html_parser.text(url),
+        description: html_parser.text(description),
+        published_at: html_parser.text(published_at),
+        category: html_parser.text(category),
+        author: html_parser.text(author)
       }
     end
   end
 
-  defp extract({:error, reason}), do: {:error, reason}
+  defp extract({:error, reason}, _), do: {:error, reason}
 
   defp format_datetime(article) do
     Map.put(article, :published_at, parse(article.published_at))

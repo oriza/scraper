@@ -7,7 +7,6 @@ defmodule Scraper.Utils.HTTPoison do
 
   @impl Scraper.Utils.HTTPClient
   def get(url) do
-    IO.inspect url
     case HTTPoison.get(url, [], ssl: [{:versions, [:"tlsv1.2"]}]) do
       {:ok, %HTTPoison.Response{body: body}} ->
         decoded_body = decode(body)
