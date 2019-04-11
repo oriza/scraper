@@ -1,4 +1,4 @@
-defmodule Scraper.Utils.HTTPoison do
+defmodule Scraper.Utils.HTTPClient.HTTPoison do
   @moduledoc """
     Abstraction over HTTPoison
   """

@@ -1,4 +1,4 @@
-defmodule Scraper.Utils.Jason do
+defmodule Scraper.Utils.JSONParser.Jason do
   @moduledoc """
     Abstraction over Jason
   """

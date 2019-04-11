@@ -1,4 +1,4 @@
-defmodule Scraper.Utils.Meeseeks do
+defmodule Scraper.Utils.HTMLParser.Meeseeks do
   @moduledoc """
     Abstraction over Meeseeks
   """

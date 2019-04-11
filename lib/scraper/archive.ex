@@ -6,38 +6,33 @@ defmodule Scraper.Archive do
     iex> Scraper.Archive.scrape("http://nol.hu/belfold?page=1", %{container: ".cikkBlock.kethasabos", title: "h1", authors: ".cikkSzerzo", description: ".lead", published_at: ".cikkDatum.centered", url: ".vezetoCimkeAfter"})
   """
 
-  alias Scraper.Http
-  import Meeseeks.CSS
-
-  def scrape(http_client, url, selectors) do
+  def scrape(http_client, html_parser, url, selectors) do
     url
     |> http_client.get()
-    |> extract(selectors)
+    |> extract(html_parser, selectors)
     |> articles_or_error()
   end
 
-  defp extract({:ok, 200, body}, selectors) do
-    document = Meeseeks.parse(body)
+  defp extract({:ok, body}, html_parser, selectors) do
+    document = html_parser.parse(body)
 
-    for article <- Meeseeks.all(document, css(selectors.container)) do
-      title = Meeseeks.one(article, css(selectors.title))
-      author = Meeseeks.one(article, css(selectors.authors))
-      description = Meeseeks.one(article, css(selectors.description))
-      published_at = Meeseeks.one(article, css(selectors.published_at))
+    for article <- html_parser.query_selector_all(document, selectors.container) do
+      title = html_parser.query_selector(article, selectors.title)
+      author = html_parser.query_selector(article, selectors.authors)
+      description = html_parser.query_selector(article, selectors.description)
+      published_at = html_parser.query_selector(article, selectors.published_at)
 
       %{
-        title: Meeseeks.text(title),
-        url: Meeseeks.attr(title, "href"),
-        author: Meeseeks.text(author),
-        description: Meeseeks.text(description),
-        published_at: Meeseeks.text(published_at)
+        title: html_parser.text(title),
+        url: html_parser.attr(title, "href"),
+        author: html_parser.text(author),
+        description: html_parser.text(description),
+        published_at: html_parser.text(published_at)
       }
     end
   end
 
-  defp extract({:ok, _, body}, _), do: {:error, body}
-
-  defp extract(error, _), do: error
+  defp extract(error, _, _), do: error
 
   defp articles_or_error(articles) when is_list(articles) do
     {:ok, articles}
