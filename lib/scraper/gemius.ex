@@ -6,16 +6,14 @@ defmodule Scraper.Gemius do
     iex> Scraper.Gemius.scrape("https://rating.gemius.com/hu/reports/segmentation/data/table?&&selectedMetrics%5B0%5D%5Bformat%5D%5B%5D=integer&selectedPeriod%5BstartDate%5D=", ["index.hu", "origo.hu"])
   """
 
-  alias Scraper.Http
-
-  def scrape(http_client, url, sites) do
+  def scrape(http_client, json_parser, url, sites) do
     url
     |> http_client.get()
-    |> extract(sites)
+    |> extract(json_parser, sites)
   end
 
-  defp extract({:ok, 200, json}, sites) do
-    case Jason.decode(json) do
+  defp extract({:ok, json}, json_parser, sites) do
+    case json_parser.decode(json) do
       {:ok, items} ->
         items
         |> Map.get("data")
@@ -27,7 +25,5 @@ defmodule Scraper.Gemius do
     end
   end
 
-  defp extract({:ok, _, body}, _), do: {:error, body}
-
-  defp extract(error, _), do: error
+  defp extract(error, _, _), do: error
 end
