@@ -12,19 +12,21 @@ defmodule Scraper.Utils.HTTPClient.HTTPoison do
         decoded_body = decode(body)
 
         {:ok, decoded_body}
+
       {:error, %HTTPoison.Error{reason: reason}} ->
         {:error, reason}
     end
   end
 
   defp decode(raw) when is_binary(raw) do
-    Enum.reduce(String.codepoints(raw), fn(w, result) ->
+    Enum.reduce(String.codepoints(raw), fn w, result ->
       cond do
         String.valid?(w) ->
           result <> w
+
         true ->
-          << parsed :: 8>> = w
-          result <> << parsed :: utf8 >>
+          <<parsed::8>> = w
+          result <> <<parsed::utf8>>
       end
     end)
   end

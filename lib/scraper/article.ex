@@ -29,7 +29,8 @@ defmodule Scraper.Article do
     {:ok,
      %{
        author: html_parser.text(html_parser.query_selector(document, selectors.authors)),
-       published_at: html_parser.text(html_parser.query_selector(document, selectors.published_at)),
+       published_at:
+         html_parser.text(html_parser.query_selector(document, selectors.published_at)),
        category: html_parser.text(html_parser.query_selector(document, selectors.category)),
        content: html_parser.text(html_parser.query_selector(document, selectors.content)),
        html: body

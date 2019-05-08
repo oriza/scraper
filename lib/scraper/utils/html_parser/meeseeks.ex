@@ -24,6 +24,7 @@ defmodule Scraper.Utils.HTMLParser.Meeseeks do
     case query_selector(document, selector) do
       nil ->
         query_selector(document, tail)
+
       element ->
         element
     end
@@ -42,6 +43,7 @@ defmodule Scraper.Utils.HTMLParser.Meeseeks do
     case query_selector_all(document, selector) do
       nil ->
         query_selector_all(document, tail)
+
       elements ->
         elements
     end

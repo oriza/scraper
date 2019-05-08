@@ -3,7 +3,7 @@ defmodule Scraper.Rss do
     RSS scraper
 
     ## Example
-    iex> Scraper.Rss.scrape("https://index.hu/24ora/rss/")
+    iex> Scraper.Rss.scrape(Scraper.Utils.HTTPClient.HTTPoison, Scraper.Utils.HTMLParser.Meeseeks, "https://index.hu/24ora/rss/")
   """
 
   def scrape(http_client, html_parser, url) do
@@ -40,27 +40,29 @@ defmodule Scraper.Rss do
   defp format_datetime(article) do
     Map.put(article, :published_at, parse(article.published_at))
   end
-  # "Tue, 08 Jan 2019 20:26:00 +0100"
-  def parse(datetime_string) do
+
+  defp parse(datetime_string) do
     ~r/(?<day>[\d]{1,2})[\s]+(?<month>[^\d]{3})[\s]+(?<year>[\d]{2,4})[\s]+(?<hour>[\d]{2})[^\d]?(?<min>[\d]{2})[^\d]?(?<sec>[\d]{2})[^\d]?(((?<offset_sign>[+-])(?<offset_hours>[\d]{2})(?<offset_mins>[\d]{2})|(?<offset_letters>[A-Z]{1,3})))?/
     |> Regex.named_captures(datetime_string)
     |> create_datetime_string()
   end
 
-  def create_datetime_string(dt_map) do
-    "#{dt_map["year"]}-#{get_month(dt_map["month"])}-#{format_day(dt_map["day"])}T#{dt_map["hour"]}:#{dt_map["min"]}:#{dt_map["sec"]}#{create_offset(dt_map)}"
+  defp create_datetime_string(dt_map) do
+    "#{dt_map["year"]}-#{get_month(dt_map["month"])}-#{format_day(dt_map["day"])}T#{
+      dt_map["hour"]
+    }:#{dt_map["min"]}:#{dt_map["sec"]}#{create_offset(dt_map)}"
   end
 
-  def create_offset(dt_map) do
-    if (String.trim(dt_map["offset_sign"]) == "") do
-      "+01:00"
+  defp create_offset(dt_map) do
+    if String.trim(dt_map["offset_sign"]) == "" do
+      "+02:00"
     else
       "#{dt_map["offset_sign"]}#{dt_map["offset_hours"]}:#{dt_map["offset_mins"]}"
     end
   end
 
   defp format_day(day) do
-    if (String.length(day) == 1) do
+    if String.length(day) == 1 do
       "0#{day}"
     else
       day
