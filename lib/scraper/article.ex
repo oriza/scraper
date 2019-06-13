@@ -12,7 +12,7 @@ defmodule Scraper.Article do
     url
     |> http_client.get()
     |> extract(html_parser, selectors)
-    |> parse_datetime()
+    #|> parse_datetime()
   end
 
   defp parse_datetime({:ok, article}) do
@@ -28,9 +28,9 @@ defmodule Scraper.Article do
 
     {:ok,
      %{
+       title: html_parser.text(html_parser.query_selector(document, selectors.title)),
        author: html_parser.text(html_parser.query_selector(document, selectors.authors)),
-       published_at:
-         html_parser.text(html_parser.query_selector(document, selectors.published_at)),
+       published_at: html_parser.text(html_parser.query_selector(document, selectors.published_at)),
        category: html_parser.text(html_parser.query_selector(document, selectors.category)),
        content: html_parser.text(html_parser.query_selector(document, selectors.content)),
        html: body

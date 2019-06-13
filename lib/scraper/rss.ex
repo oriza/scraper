@@ -81,4 +81,5 @@ defmodule Scraper.Rss do
   defp get_month("Oct"), do: "10"
   defp get_month("Nov"), do: "11"
   defp get_month("Dec"), do: "12"
+  defp get_month(month), do: month
 end

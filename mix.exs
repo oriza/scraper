@@ -25,6 +25,7 @@ defmodule Scraper.MixProject do
       {:meeseeks, "~> 0.10.1"},
       {:jason, "~> 1.1"},
       {:timex, "~> 3.0"},
+      {:elixir_feed_parser, "~> 0.0.1"},
       {:credo, "~> 0.10.0", only: [:dev, :test], runtime: false}
     ]
   end
